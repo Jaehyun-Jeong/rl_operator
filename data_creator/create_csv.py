@@ -17,7 +17,11 @@ class ArithmeticDataCreator():
         self._onehot = onehot
 
         # columns to create dataframe
-        self._columns = ["first_number", "oprator", "second_number", "answer"]
+        self._columns = ["first_number", "second_number", "operator", "answer"]
+        self._onehot_columns = [
+                "first_number", "second_number",
+                "add", "sub", "mul",
+                "answer"]
 
         # operator string to python operator func
         self._operators = {
@@ -38,14 +42,18 @@ class ArithmeticDataCreator():
         # get random opeerator and create 3-tuple
         features = (
                 first_number,
+                second_number,
                 random.choice(operator_list),
-                second_number)
-
-        if self._onehot:
-            pass
+                )
 
         # calulate answer
-        answer = self._operators[features[1]](first_number, second_number)
+        if self._onehot:
+            answer = self._operators[features[2]](first_number, second_number)
+            onehot = tuple(
+                    [1 if i == features[2] else 0 for i in operator_list])
+            features = features[:2] + onehot
+        else:
+            answer = self._operators[features[2]](first_number, second_number)
 
         # stack answer to features and return
         return features + (answer,)
@@ -54,12 +62,14 @@ class ArithmeticDataCreator():
     def dataframe(self):
         return pd.DataFrame(
                 [self.__rand_data() for i in range(self._data_size)],
-                columns=self._columns,
+                columns=self._onehot_columns
+                if self._onehot
+                else self._columns,
                 )
 
 
 if __name__ == "__main__":
 
-    data_creator = ArithmeticDataCreator("./data.csv", 100)
+    data_creator = ArithmeticDataCreator("./data.csv", 100, False)
 
     print(data_creator.dataframe())
