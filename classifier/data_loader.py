@@ -11,10 +11,6 @@ class OperationDataset(Dataset):
             path: str,
             ):
 
-        df = pd.read_csv(path)
-
-        self.data = df.iloc[:, :-1].values
-        self.labels = df.iloc[:, -1].values
 
         super().__init__()
 
@@ -29,7 +25,11 @@ class OperationDataset(Dataset):
 
 
 def get_loaders(config):
-    x, y = load_mnist(is_train = True, flatten = False)
+
+    df = pd.read_csv("../data.csv")
+
+    data = torch.tensor(df.iloc[:, :-1].values)
+    labels = torch.tensor(df.iloc[:, -1].values)
 
     train_cnt = int(x.size(0) * config.train_ratio)
     valid_cnt = x.size(0) - train_cnt
@@ -47,11 +47,11 @@ def get_loaders(config):
         ).split([train_cnt, valid_cnt], dim = 0)
 
     train_loader = DataLoader(
-            dataset = MnistDataset(train_x, train_y, flatten = True),
+            dataset = OperationDataset(train_x, train_y, flatten = True),
             batch_size = config.batch_size,
             shuffle = True)
     valid_loader = DataLoader(
-            dataset = MnistDataset(valid_x, valid_y, flatten = True),
+            dataset = OperationDataset(valid_x, valid_y, flatten = True),
             batch_size = config.batch_size,
             shuffle = True)
 
