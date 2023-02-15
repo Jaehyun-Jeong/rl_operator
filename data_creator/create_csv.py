@@ -99,4 +99,10 @@ def create_csv(
 
 
 if __name__ == "__main__":
-    pass
+    create_csv(
+            train_path="../data/train.csv",
+            valid_path="../data/valid.csv",
+            data_size=50000,
+            train_ratio=0.8,
+            correct_prob=1,
+            )
