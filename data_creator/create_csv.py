@@ -72,37 +72,23 @@ class ArithmeticDataCreator():
 
 
 def create_csv(
-        train_path: str,
-        valid_path: str,
+        path: str,
         data_size: int = 10000,
-        train_ratio: float = 0.8,
         correct_prob: float = 0.5,
         ):
 
-    train_size = int(data_size*train_ratio)
-    valid_size = data_size - train_size
-
-    train_data_creator = ArithmeticDataCreator(
-            data_size=train_size,
+    data_creator = ArithmeticDataCreator(
+            data_size=data_size,
             onehot=True,
             correct_prob=correct_prob)
-    valid_data_creator = ArithmeticDataCreator(
-            data_size=valid_size,
-            onehot=True,
-            correct_prob=1)
 
-    train_df = train_data_creator.dataframe()
-    valid_df = valid_data_creator.dataframe()
-
-    train_df.to_csv(train_path, index=False)
-    valid_df.to_csv(valid_path, index=False)
+    df = data_creator.dataframe()
+    df.to_csv(path, index=False)
 
 
 if __name__ == "__main__":
     create_csv(
-            train_path="../data/train.csv",
-            valid_path="../data/valid.csv",
+            path="../data.csv",
             data_size=50000,
-            train_ratio=0.8,
             correct_prob=1,
             )
