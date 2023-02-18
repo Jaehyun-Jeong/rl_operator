@@ -8,14 +8,17 @@ class OperationDataset(Dataset):
 
     def __init__(
             self,
-            path: str,
+            x: torch.Tensor,
+            y: torch.Tensor,
             ):
 
+        self.data = x
+        self.labels = y.type(torch.LongTensor)
 
         super().__init__()
 
     def __len__(self):
-        return len(self.labels)
+        return self.data.size(0)
 
     def __getitem__(self, idx):
         x = self.data[idx]
@@ -28,8 +31,8 @@ def get_loaders(config):
 
     df = pd.read_csv("../data.csv")
 
-    data = torch.tensor(df.iloc[:, :-1].values)
-    labels = torch.tensor(df.iloc[:, -1].values)
+    x = torch.Tensor(df.iloc[:, :-1].values)
+    y = torch.Tensor(df.iloc[:, -1].values)
 
     train_cnt = int(x.size(0) * config.train_ratio)
     valid_cnt = x.size(0) - train_cnt
@@ -47,17 +50,22 @@ def get_loaders(config):
         ).split([train_cnt, valid_cnt], dim = 0)
 
     train_loader = DataLoader(
-            dataset = OperationDataset(train_x, train_y, flatten = True),
+            dataset = OperationDataset(train_x, train_y),
             batch_size = config.batch_size,
             shuffle = True)
     valid_loader = DataLoader(
-            dataset = OperationDataset(valid_x, valid_y, flatten = True),
+            dataset = OperationDataset(valid_x, valid_y),
             batch_size = config.batch_size,
             shuffle = True)
 
-    test_x, test_y = load_mnist(is_train = False, flatten = False)
+    # Load Test
+
+    df = pd.read_csv("../test.csv")
+
+    test_x = torch.tensor(df.iloc[:, :-1].values)
+    test_y = torch.tensor(df.iloc[:, -1].values)
     test_loader = DataLoader(
-            dataset = MnistDataset(test_x, test_y, flatten = True),
+            dataset = OperationDataset(test_x, test_y),
             batch_size = config.batch_size,
             shuffle = False)
 

@@ -1,3 +1,4 @@
+import argparse
 import random
 import operator
 import pandas as pd
@@ -86,9 +87,22 @@ def create_csv(
     df.to_csv(path, index=False)
 
 
+def define_argparser():
+    p = argparse.ArgumentParser()
+
+    p.add_argument("--path", required=True, type=str)
+    p.add_argument("--data_size", required=True, type=int)
+    p.add_argument("--correct_prob", required=True, type=float)
+
+    return p.parse_args()
+
+
 if __name__ == "__main__":
+
+    config = define_argparser()
+
     create_csv(
-            path="../data.csv",
-            data_size=50000,
-            correct_prob=1,
+            path=config.path,
+            data_size=config.data_size,
+            correct_prob=config.correct_prob,
             )

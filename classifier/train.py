@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from model import ImageClassifier
+from model import Classifier
 from trainer import Trainer
 from data_loader import get_loaders
 
@@ -35,7 +35,7 @@ def main(config):
     print("Valid:", len(valid_loader.dataset))
     print("Test:", len(test_loader.dataset))
 
-    model = ImageClassifier(28**2, 10).to(device)
+    model = Classifier(5, 110).to(device)
     optimizer = optim.Adam(model.parameters())
     crit = nn.NLLLoss()
 
