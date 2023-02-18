@@ -13,7 +13,7 @@ class OperationDataset(Dataset):
             ):
 
         self.data = x
-        self.labels = y.type(torch.LongTensor)
+        self.labels = y
 
         super().__init__()
 
@@ -32,7 +32,7 @@ def get_loaders(config):
     df = pd.read_csv("../data.csv")
 
     x = torch.Tensor(df.iloc[:, :-1].values)
-    y = torch.Tensor(df.iloc[:, -1].values)
+    y = torch.tensor(df.iloc[:, -1].values)
 
     train_cnt = int(x.size(0) * config.train_ratio)
     valid_cnt = x.size(0) - train_cnt
