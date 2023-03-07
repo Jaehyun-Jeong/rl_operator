@@ -43,17 +43,7 @@ def main(config):
     trainer.train(model, crit, optimizer, train_loader, valid_loader)
 
 
-class CONFIG():
-    model_fn = "./model.pth"
-    gpu_id = 0 if torch.cuda.is_available() else -1
-    train_ratio = .8
-    batch_size = 256 
-    n_epochs = 20
-    verbose = 2
-
-
 if __name__ == '__main__':
-    # config = define_argparser()
-    config = CONFIG()
+    config = define_argparser()
 
     main(config)
